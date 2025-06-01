@@ -27,8 +27,222 @@ Camera camera;
 
 
 bool texturing = true;
-bool lightning = true;
+bool lightning = false;
 bool alpha = false;
+
+
+void draw3DBase(float _x, float _y, float z, float width, float height, float depth, float color1, float color2, float color3) {
+
+	float x = _x - 10;
+	float y = _y - 6;
+
+
+	// Верхняя грань основания
+	glBegin(GL_QUADS);
+	glColor3f(color1, color2, color3);
+	glVertex3f(x, y, z);
+	glVertex3f(x + width, y, z);
+	glVertex3f(x + width, y, z + depth);
+	glVertex3f(x, y, z + depth);
+	glEnd();
+
+	// Передняя грань
+	glBegin(GL_QUADS);
+	glColor3f(color1, color2, color3);
+	glVertex3f(x, y, z + depth);
+	glVertex3f(x + width, y, z + depth);
+	glVertex3f(x + width, y + height, z + depth);
+	glVertex3f(x, y + height, z + depth);
+	glEnd();
+
+	// Задняя грань
+	glBegin(GL_QUADS);
+	glColor3f(color1 - 0.2, color2 - 0.2, color3 - 0.2);
+	glVertex3f(x, y, z);
+	glVertex3f(x + width, y, z);
+	glVertex3f(x + width, y + height, z);
+	glVertex3f(x, y + height, z);
+	glEnd();
+
+	// Правая боковая грань
+	glBegin(GL_QUADS);
+	glColor3f(color1 - 0.2, color2 - 0.2, color3 - 0.2);
+	glVertex3f(x + width, y, z);
+	glVertex3f(x + width, y, z + depth);
+	glVertex3f(x + width, y + height, z + depth);
+	glVertex3f(x + width, y + height, z);
+	glEnd();
+
+	// Левая боковая грань
+	glBegin(GL_QUADS);
+	glColor3f(color1, color2, color3);
+	glVertex3f(x, y, z);
+	glVertex3f(x, y, z + depth);
+	glVertex3f(x, y + height, z + depth);
+	glVertex3f(x, y + height, z);
+	glEnd();
+
+	// Нижняя грань
+	glBegin(GL_QUADS);
+	glColor3f(color1-0.2, color2 - 0.2, color3 - 0.2);
+	glVertex3f(x, y + height, z);
+	glVertex3f(x + width, y + height, z);
+	glVertex3f(x + width, y + height, z + depth);
+	glVertex3f(x, y + height, z + depth);
+	glEnd();
+
+	// Обводка клавиши - сплошная линия
+	glDisable(GL_LINE_STIPPLE); // Гарантируем, что пунктир отключен
+	glLineWidth(2.0f); // Устанавливаем толщину линии
+	glBegin(GL_LINE_LOOP);
+	glColor3f(0.0f, 0.0f, 0.0f); // Черный цвет
+	glVertex3f(x, y, z + depth);
+	glVertex3f(x + width, y, z + depth);
+	glVertex3f(x + width, y + height, z + depth);
+	glVertex3f(x, y + height, z + depth);
+	glEnd();
+}
+
+
+class klav {
+public:
+	int id;
+	Texture texture;
+
+	void draw3Dkl(float _x, float _y, float z, float width, float height, float depth, float color1, float color2, float color3) {
+
+		float x = _x - 10;
+		float y = _y - 6;
+
+
+		// Верхняя грань основания
+		glBegin(GL_QUADS);
+		glColor3f(color1, color2, color3);
+		glVertex3f(x, y, z);
+		glVertex3f(x + width, y, z);
+		glVertex3f(x + width, y, z + depth);
+		glVertex3f(x, y, z + depth);
+		glEnd();
+
+
+		// Передняя грань
+		glBegin(GL_QUADS);
+		glColor3f(color1, color2, color3);
+		glVertex3f(x, y, z + depth);
+		glVertex3f(x + width, y, z + depth);
+		glVertex3f(x + width, y + height, z + depth);
+		glVertex3f(x, y + height, z + depth);
+		glEnd();
+
+		// Задняя грань
+		glBegin(GL_QUADS);
+		glColor3f(color1 - 0.2, color2 - 0.2, color3 - 0.2);
+		glVertex3f(x, y, z);
+		glVertex3f(x + width, y, z);
+		glVertex3f(x + width, y + height, z);
+		glVertex3f(x, y + height, z);
+		glEnd();
+
+		// Правая боковая грань
+		glBegin(GL_QUADS);
+		glColor3f(color1 - 0.2, color2 - 0.2, color3 - 0.2);
+		glVertex3f(x + width, y, z);
+		glVertex3f(x + width, y, z + depth);
+		glVertex3f(x + width, y + height, z + depth);
+		glVertex3f(x + width, y + height, z);
+		glEnd();
+
+		// Левая боковая грань
+		glBegin(GL_QUADS);
+		glColor3f(color1, color2, color3);
+		glVertex3f(x, y, z);
+		glVertex3f(x, y, z + depth);
+		glVertex3f(x, y + height, z + depth);
+		glVertex3f(x, y + height, z);
+		glEnd();
+
+		// Нижняя грань
+		glBegin(GL_QUADS);
+		glColor3f(color1 - 0.2, color2 - 0.2, color3 - 0.2);
+		glVertex3f(x, y + height, z);
+		glVertex3f(x + width, y + height, z);
+		glVertex3f(x + width, y + height, z + depth);
+		glVertex3f(x, y + height, z + depth);
+		glEnd();
+
+		// Обводка клавиши - сплошная линия
+		glDisable(GL_LINE_STIPPLE); // Гарантируем, что пунктир отключен
+		glLineWidth(2.0f); // Устанавливаем толщину линии
+		glBegin(GL_LINE_LOOP);
+		glColor3f(0.0f, 0.0f, 0.0f); // Черный цвет
+		glVertex3f(x, y, z + depth);
+		glVertex3f(x + width, y, z + depth);
+		glVertex3f(x + width, y + height, z + depth);
+		glVertex3f(x, y + height, z + depth);
+		glEnd();
+	}
+};
+
+
+void display() {
+
+	// Рисуем объемное основание под клавиатурой
+	draw3DBase(2, 0, 0, 16, 11, 5, 0.9f, 0.9f, 0.98f);
+
+	draw3DBase(4, 2, 5, 12, 7, 2, 1.0f, 0.85f, 0.73f);
+
+	draw3DBase(13, 5, 7, 1, 3, 0.5, 0.74f, 0.99f, 0.79f);
+	draw3DBase(14, 5, 7, 1, 1, 0.5, 0.74f, 0.99f, 0.79f);
+
+	draw3DBase(6, 3, 7, 5, 1, 0.5, 0.74f, 0.99f, 0.79f);
+
+
+	draw3DBase(4.33333333333333, 8.33333333333333, 7, 0.33333333333333, 0.33333333333333, 0.5, 1, 1, 1);
+
+
+
+	// Параметры клавиш
+	float kl_shir = 1;
+	float kl_vis = 1;
+	float kl_glub = 0.5;
+	float kl_rast = 1;
+	float nachalo_x = 5;
+	float kl_verh_rast = 7;
+	float kl_niz_rast = 5;
+	float kl_vis_ot_niza = 7;
+
+
+	// Верхний ряд (5 клавиш)
+	for (int i = 0; i < 4; i++) {
+		klav key;
+		key.id = i;
+
+	/*	switch (i)
+		{
+		case(0):
+			key.texture.LoadTexture("textures/0.png");
+		case(1):
+			texture = ''
+		case(2):
+			texture = ''
+		case(3):
+			texture = ''
+
+		}
+
+		key.texture = texture*/
+		key.draw3Dkl(nachalo_x + i * (kl_shir + kl_rast), kl_verh_rast, kl_vis_ot_niza, kl_shir, kl_vis, kl_glub, 0.74f, 0.99f, 0.79f);
+	}
+
+	// Нижний ряд (5 клавиш)
+	for (int i = 0; i < 4; i++) {
+		klav key(i);
+		key.draw3Dkl(nachalo_x + i * (kl_shir + kl_rast), kl_niz_rast, kl_vis_ot_niza, kl_shir, kl_vis, kl_glub, 0.74f, 0.99f, 0.79f);
+	}
+}
+
+
+
 
 
 //переключение режимов освещения, текстурирования, альфаналожения
@@ -156,7 +370,6 @@ double full_time = 0;
 int location = 0;
 void Render(double delta_time)
 {    
-	
 
 	full_time += delta_time;
 	
@@ -236,10 +449,7 @@ void Render(double delta_time)
 
 	
 
-	
-
-
-
+	display();
 
 
 
@@ -303,6 +513,7 @@ void Render(double delta_time)
 	glMatrixMode(GL_MODELVIEW);
 	glPopMatrix();
 	
+
 	
 }   
 
