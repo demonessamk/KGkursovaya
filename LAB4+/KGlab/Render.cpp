@@ -10,6 +10,7 @@
 #include "Texture.h"
 
 
+
 #include "ObjLoader.h"
 
 
@@ -181,19 +182,53 @@ void drawMonitor() {
 
 
 
-
-
-
 class klav {
 public:
+	std::chrono::steady_clock::time_point pressStartTime;
 	int id;
 	Texture texture;
+	float pressOffset = 0; // Текущее смещение при нажатии
+	bool isPressed = false;
+	float pressSpeed = 0.1; // Скорость анимации нажатия
+	float maxPressDepth = 0.5; // Максимальная глубина нажатия
+
+	klav(int _id = -1) : id(_id) {}
+
+	void press() {
+		isPressed = true;
+		pressStartTime = std::chrono::steady_clock::now();
+	}
+
+	void update() {
+		auto now = std::chrono::steady_clock::now();
+		float elapsed = std::chrono::duration<float>(now - pressStartTime).count();
+
+		if (!isPressed) {
+			// Анимация нажатия (200ms)
+			if (elapsed < 0.2f) {
+				pressOffset = -maxPressDepth * (elapsed / 0.2f);
+			}
+		}
+		else {
+			// Анимация отпускания (200ms)
+			if (elapsed < 0.2f) {
+				pressOffset = -maxPressDepth * (1.0f - elapsed / 0.2f);
+			}
+			else {
+				pressOffset = 0.0f;
+			}
+		}
+	}
 
 
-	void draw3Dkl(float _x, float _y, float z, float width, float height, float depth, float color1, float color2, float color3) {
+	void draw3Dkl(float _x, float _y, float z, float width, float height, float _depth, float color1, float color2, float color3) {
 
 		float x = _x - 10;
 		float y = _y - 6;
+		float depth = -_depth;
+
+		z += pressOffset;
+		depth -= pressOffset;
 
 
 		// Верхняя грань основания
@@ -308,9 +343,9 @@ public:
 };
 
 
-void display() {
+std::vector<klav> keys;
 
-	// Рисуем объемное основание под клавиатурой
+void display() {
 	draw3DBase(2, 0, 0, 16, 11, 5, 0.79f, 0.71f, 0.89f);
 
 	draw3DBase(4, 2, 5.02, 12, 7, 2, 0.82f, 0.90f, 0.94f);
@@ -324,8 +359,15 @@ void display() {
 	draw3DBase(4.33333333333333, 8.33333333333333, 7.03, 0.33333333333333, 0.33333333333333, 0.5, 1, 1, 1);
 
 
+	for (int i = 0; i < 5; i++) {
+		klav key(i);
+		keys.push_back(key);
+	}
+	for (int i = 0; i < 5; i++) {
+		klav key(i + 5);
+		keys.push_back(key);
+	}
 
-	// Параметры клавиш
 	float kl_shir = 1;
 	float kl_vis = 1;
 	float kl_glub = 0.5;
@@ -333,39 +375,25 @@ void display() {
 	float nachalo_x = 5;
 	float kl_verh_rast = 7;
 	float kl_niz_rast = 5;
-	float kl_vis_ot_niza = 7.03;
+	float kl_vis_ot_niza = 7.53;
 
-
-	// Верхний ряд (5 клавиш)
+	// Верхний ряд
 	for (int i = 0; i < 4; i++) {
-		klav key;
-		key.id = i;
-
-	/*	switch (i)
-		{
-		case(0):
-			key.texture.LoadTexture("textures/0.png");
-		case(1):
-			texture = ''
-		case(2):
-			texture = ''
-		case(3):
-			texture = ''
-
-		}
-
-		key.texture = texture*/
-		key.draw3Dkl(nachalo_x + i * (kl_shir + kl_rast), kl_verh_rast, kl_vis_ot_niza, kl_shir, kl_vis, kl_glub, 0.98f, 0.85f, 0.87f);
+		keys[i].draw3Dkl(nachalo_x + i * (kl_shir + kl_rast), kl_verh_rast, kl_vis_ot_niza, kl_shir, kl_vis, kl_glub, 0.98f, 0.85f, 0.87f);
 	}
 
-	// Нижний ряд (5 клавиш)
+	// Нижний ряд
 	for (int i = 0; i < 4; i++) {
-		klav key(i);
-		key.draw3Dkl(nachalo_x + i * (kl_shir + kl_rast), kl_niz_rast, kl_vis_ot_niza, kl_shir, kl_vis, kl_glub, 0.98f, 0.85f, 0.87f);
+		keys[i + 5].draw3Dkl(nachalo_x + i * (kl_shir + kl_rast), kl_niz_rast, kl_vis_ot_niza, kl_shir, kl_vis, kl_glub, 0.98f, 0.85f, 0.87f);
 	}
 }
 
 
+void updateKeyboard() {
+	for (auto& key : keys) {
+		key.update();
+	}
+}
 
 
 
@@ -374,6 +402,14 @@ void switchModes(OpenGL *sender, KeyEventArg arg)
 {
 	//конвертируем код клавиши в букву
 	auto key = LOWORD(MapVirtualKeyA(arg.key, MAPVK_VK_TO_CHAR));
+
+	if (key >= '0' && key <= '9') {
+		int idx = key - '0';
+		if (idx < keys.size()) {
+			keys[idx].press();
+		}
+	}
+	
 
 	switch (key)
 	{
@@ -387,6 +423,7 @@ void switchModes(OpenGL *sender, KeyEventArg arg)
 		alpha = !alpha;
 		break;
 	}
+
 }
 
 //умножение матриц c[M1][N1] = a[M1][N1] * b[M2][N2]
@@ -495,6 +532,7 @@ int location = 0;
 void Render(double delta_time)
 {    
 
+
 	full_time += delta_time;
 	
 	//натройка камеры и света
@@ -571,16 +609,12 @@ void Render(double delta_time)
 
 	//============ РИСОВАТЬ ТУТ ==============
 
-	
-
 	display();
+
+	updateKeyboard();
 
 	drawMonitor();
 
-
-
-
-	
 	
 	//сбрасываем все трансформации
 	glLoadIdentity();
