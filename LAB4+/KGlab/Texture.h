@@ -13,6 +13,8 @@ public:
 
 	void LoadTexture(const std::string& texture_file_name);
 	void Bind();
+	unsigned int GetID() const { return texId; }
+
 
 };
 

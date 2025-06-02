@@ -32,6 +32,7 @@ bool lightning = false;
 bool alpha = false;
 
 
+
 void draw3DBase(float _x, float _y, float z, float width, float height, float depth, float color1, float color2, float color3) {
 
 	float x = _x - 10;
@@ -179,9 +180,6 @@ void drawMonitor() {
 	glPopMatrix();
 }
 
-
-
-
 class klav {
 public:
 	std::chrono::steady_clock::time_point pressStartTime;
@@ -191,8 +189,9 @@ public:
 	bool isPressed = false;
 	float pressSpeed = 0.1; // Скорость анимации нажатия
 	float maxPressDepth = 0.5; // Максимальная глубина нажатия
-
+	unsigned int texId = 0;
 	klav(int _id = -1) : id(_id) {}
+
 
 	void press() {
 		isPressed = true;
@@ -205,9 +204,13 @@ public:
 
 		if (!isPressed) {
 			// Анимация нажатия (200ms)
-			if (elapsed < 0.2f) {
-				pressOffset = -maxPressDepth * (elapsed / 0.2f);
+			if (!pressOffset == 0)
+			{
+				if (elapsed < 0.2f) {
+					pressOffset = -maxPressDepth * (elapsed / 0.2f);
+				}
 			}
+
 		}
 		else {
 			// Анимация отпускания (200ms)
@@ -249,14 +252,83 @@ public:
 		glVertex3f(x, y + height, z - depth);
 		glEnd();
 
-		// Передняя грань
-		glBegin(GL_QUADS);
-		glColor3f(color1, color2, color3);
-		glVertex3f(x, y, z);
-		glVertex3f(x + width, y, z);
-		glVertex3f(x + width, y + height, z);
-		glVertex3f(x, y + height, z);
-		glEnd();
+		// Передняя грань с текстурой
+		if (id >= 0) {
+
+			glEnable(GL_TEXTURE_2D);
+			switch (id) {
+			case(0):
+				texture.LoadTexture("textures/key0.jpg");
+				texId = texture.GetID();
+				break;
+			case(1):
+				texture.LoadTexture("textures/key1.jpg");
+				texId = texture.GetID();
+				break;
+			case(2):
+				texture.LoadTexture("textures/key2.jpg");
+				texId = texture.GetID();
+				break;
+			case(3):
+				texture.LoadTexture("textures/key3.jpg");
+				texId = texture.GetID();
+				break;
+			case(4):
+				texture.LoadTexture("textures/key4.jpg");
+				texId = texture.GetID();
+				break;
+			case(5):
+				texture.LoadTexture("textures/key5.jpg");
+				texId = texture.GetID();
+				break;
+			case(6):
+				texture.LoadTexture("textures/key6.jpg");
+				texId = texture.GetID();
+				break;
+			case(7):
+				texture.LoadTexture("textures/key7.jpg");
+				texId = texture.GetID();
+				break;
+			case(8):
+				texture.LoadTexture("textures/key8.jpg");
+				texId = texture.GetID();
+				break;
+			case(9):
+				texture.LoadTexture("textures/probel.jpg");
+				texId = texture.GetID();
+				break;
+			case(10):
+				texture.LoadTexture("textures/enter1.jpg");
+				texId = texture.GetID();
+				break;
+			case(11):
+				texture.LoadTexture("textures/enter2.jpg");
+				texId = texture.GetID();
+				break;
+			}
+
+			glBindTexture(GL_TEXTURE_2D, texId);
+
+			
+			glBegin(GL_QUADS);
+			glColor3f(1, 1, 1); // Белый цвет для чистого отображения текстуры
+			glTexCoord2f(0.0f, 0.0f); glVertex3f(x, y, z);
+			glTexCoord2f(1.0f, 0.0f); glVertex3f(x + width, y, z);
+			glTexCoord2f(1.0f, 1.0f); glVertex3f(x + width, y + height, z);
+			glTexCoord2f(0.0f, 1.0f); glVertex3f(x, y + height, z);
+			glEnd();
+			glDisable(GL_TEXTURE_2D);
+		}
+		else {
+			// Передняя грань без текстуры (если текстура не загружена)
+			glBegin(GL_QUADS);
+			glColor3f(color1, color2, color3);
+			glVertex3f(x, y, z);
+			glVertex3f(x + width, y, z);
+			glVertex3f(x + width, y + height, z);
+			glVertex3f(x, y + height, z);
+			glEnd();
+		}
 
 		// Правая боковая грань
 		glBegin(GL_QUADS);
@@ -342,7 +414,29 @@ public:
 };
 
 
+
 std::vector<klav> keys;
+void initKeyboard() {
+
+
+	keys.clear();
+
+	for (int i = 0; i < 5; i++) {
+		klav key(i);
+		keys.push_back(key);
+	}
+	for (int i = 0; i < 4; i++) {
+		klav key(i + 5);
+		keys.push_back(key);
+	}
+	klav probel(9);
+	keys.push_back(probel);
+
+	klav enter_part1(10);
+	keys.push_back(enter_part1);
+	klav enter_part2(11);
+	keys.push_back(enter_part2);
+}
 
 void display() {
 	draw3DBase(2, 0, 0, 16, 11, 5, 0.79f, 0.71f, 0.89f);
@@ -353,24 +447,7 @@ void display() {
 	draw3DBase(4.33333333333333, 8.33333333333333, 7.03, 0.33333333333333, 0.33333333333333, 0.5, 1, 1, 1);
 
 
-	for (int i = 0; i < 5; i++) {
-		klav key(i);
-		keys.push_back(key);
-	}
-	for (int i = 0; i < 5; i++) {
-		klav key(i + 5);
-		keys.push_back(key);
-	}
-	klav probel(9);
-	keys.push_back(probel);
-	keys[9].draw3Dkl(6, 3, 7.53, 5, 1, 0.5, 0.77f, 0.88f, 0.71f);
-
-	klav enter_part1(10);
-	keys.push_back(enter_part1);
-	klav enter_part2(11);
-	keys.push_back(enter_part2);
-	keys[10].draw3Dkl(13, 5, 7.53, 1, 3, 0.5, 0.77f, 0.88f, 0.71f);
-	keys[11].draw3Dkl(14, 5, 7.53, 1, 1, 0.5, 0.77f, 0.88f, 0.71f);
+	
 
 
 	float kl_shir = 1;
@@ -391,6 +468,11 @@ void display() {
 	for (int i = 0; i < 4; i++) {
 		keys[i + 5].draw3Dkl(nachalo_x + i * (kl_shir + kl_rast), kl_niz_rast, kl_vis_ot_niza, kl_shir, kl_vis, kl_glub, 0.98f, 0.85f, 0.87f);
 	}
+
+
+	keys[9].draw3Dkl(6, 3, 7.53, 5, 1, 0.5, 0.77f, 0.88f, 0.71f);  // Пробел
+	keys[10].draw3Dkl(13, 5, 7.53, 1, 3, 0.5, 0.77f, 0.88f, 0.71f); // Enter 1
+	keys[11].draw3Dkl(14, 5, 7.53, 1, 1, 0.5, 0.77f, 0.88f, 0.71f); // Enter 2
 }
 
 
@@ -470,7 +552,7 @@ void MatrixMultiply(const T* a, const T* b, T* c)
 GuiTextRectangle text;
 
 //айдишник для текстуры
-GLuint texId;
+
 //выполняется один раз перед первым рендером
 
 ObjModel f;
@@ -481,13 +563,13 @@ Shader phong_sh;
 Shader vb_sh;
 Shader simple_texture_sh;
 
-Texture stankin_tex, vb_tex, monkey_tex;
-
-
-
 void initRender()
 {
 
+
+
+
+	initKeyboard();
 	cassini_sh.VshaderFileName = "shaders/v.vert";
 	cassini_sh.FshaderFileName = "shaders/cassini.frag";
 	cassini_sh.LoadShaderFromFile();
@@ -507,10 +589,6 @@ void initRender()
 	simple_texture_sh.FshaderFileName = "shaders/textureShader.frag";
 	simple_texture_sh.LoadShaderFromFile();
 	simple_texture_sh.Compile();
-
-	stankin_tex.LoadTexture("textures/stankin.png");
-	vb_tex.LoadTexture("textures/vb.png");
-	monkey_tex.LoadTexture("textures/monkey.png");
 
 
 	f.LoadModel("models//monkey.obj_m");
@@ -626,7 +704,7 @@ void Render(double delta_time)
 			   //(GL_SMOOTH - плоская закраска)
 
 	//============ РИСОВАТЬ ТУТ ==============
-
+	
 	display();
 
 	updateKeyboard();
@@ -634,63 +712,63 @@ void Render(double delta_time)
 	drawMonitor();
 
 	
-	//сбрасываем все трансформации
-	glLoadIdentity();
-	camera.SetUpCamera();	
-	Shader::DontUseShaders();
-	//рисуем источник света
-	light.DrawLightGizmo();
+	////сбрасываем все трансформации
+	//glLoadIdentity();
+	//camera.SetUpCamera();	
+	//Shader::DontUseShaders();
+	////рисуем источник света
+	//light.DrawLightGizmo();
 
-	//================Сообщение в верхнем левом углу=======================
-	glActiveTexture(GL_TEXTURE0);
-	//переключаемся на матрицу проекции
-	glMatrixMode(GL_PROJECTION);
-	//сохраняем текущую матрицу проекции с перспективным преобразованием
-	glPushMatrix();
-	//загружаем единичную матрицу в матрицу проекции
-	glLoadIdentity();
+	////================Сообщение в верхнем левом углу=======================
+	//glActiveTexture(GL_TEXTURE0);
+	////переключаемся на матрицу проекции
+	//glMatrixMode(GL_PROJECTION);
+	////сохраняем текущую матрицу проекции с перспективным преобразованием
+	//glPushMatrix();
+	////загружаем единичную матрицу в матрицу проекции
+	//glLoadIdentity();
 
-	//устанавливаем матрицу паралельной проекции
-	glOrtho(0, gl.getWidth() - 1, 0, gl.getHeight() - 1, 0, 1);
+	////устанавливаем матрицу паралельной проекции
+	//glOrtho(0, gl.getWidth() - 1, 0, gl.getHeight() - 1, 0, 1);
 
-	//переключаемся на моделвью матрицу
-	glMatrixMode(GL_MODELVIEW);
-	//сохраняем матрицу
-	glPushMatrix();
-    //сбразываем все трансформации и настройки камеры загрузкой единичной матрицы
-	glLoadIdentity();
+	////переключаемся на моделвью матрицу
+	//glMatrixMode(GL_MODELVIEW);
+	////сохраняем матрицу
+	//glPushMatrix();
+ //   //сбразываем все трансформации и настройки камеры загрузкой единичной матрицы
+	//glLoadIdentity();
 
-	//отрисованное тут будет визуалзироватся в 2д системе координат
-	//нижний левый угол окна - точка (0,0)
-	//верхний правый угол (ширина_окна - 1, высота_окна - 1)
+	////отрисованное тут будет визуалзироватся в 2д системе координат
+	////нижний левый угол окна - точка (0,0)
+	////верхний правый угол (ширина_окна - 1, высота_окна - 1)
 
-	
-	std::wstringstream ss;
-	ss << std::fixed << std::setprecision(3);
-	ss << "T - " << (texturing ? L"[вкл]выкл  " : L" вкл[выкл] ") << L"текстур" << std::endl;
-	ss << "L - " << (lightning ? L"[вкл]выкл  " : L" вкл[выкл] ") << L"освещение" << std::endl;
-	ss << "A - " << (alpha ? L"[вкл]выкл  " : L" вкл[выкл] ") << L"альфа-наложение" << std::endl;
-	ss << L"F - Свет из камеры" << std::endl;
-	ss << L"G - двигать свет по горизонтали" << std::endl;
-	ss << L"G+ЛКМ двигать свет по вертекали" << std::endl;
-	ss << L"Коорд. света: (" << std::setw(7) <<  light.x() << "," << std::setw(7) << light.y() << "," << std::setw(7) << light.z() << ")" << std::endl;
-	ss << L"Коорд. камеры: (" << std::setw(7) << camera.x() << "," << std::setw(7) << camera.y() << "," << std::setw(7) << camera.z() << ")" << std::endl;
-	ss << L"Параметры камеры: R=" << std::setw(7) << camera.distance() << ",fi1=" << std::setw(7) << camera.fi1() << ",fi2=" << std::setw(7) << camera.fi2() << std::endl;
-	ss << L"delta_time: " << std::setprecision(5)<< delta_time << std::endl;
-	ss << L"full_time: " << std::setprecision(2) << full_time << std::endl;
+	//
+	//std::wstringstream ss;
+	//ss << std::fixed << std::setprecision(3);
+	//ss << "T - " << (texturing ? L"[вкл]выкл  " : L" вкл[выкл] ") << L"текстур" << std::endl;
+	//ss << "L - " << (lightning ? L"[вкл]выкл  " : L" вкл[выкл] ") << L"освещение" << std::endl;
+	//ss << "A - " << (alpha ? L"[вкл]выкл  " : L" вкл[выкл] ") << L"альфа-наложение" << std::endl;
+	//ss << L"F - Свет из камеры" << std::endl;
+	//ss << L"G - двигать свет по горизонтали" << std::endl;
+	//ss << L"G+ЛКМ двигать свет по вертекали" << std::endl;
+	//ss << L"Коорд. света: (" << std::setw(7) <<  light.x() << "," << std::setw(7) << light.y() << "," << std::setw(7) << light.z() << ")" << std::endl;
+	//ss << L"Коорд. камеры: (" << std::setw(7) << camera.x() << "," << std::setw(7) << camera.y() << "," << std::setw(7) << camera.z() << ")" << std::endl;
+	//ss << L"Параметры камеры: R=" << std::setw(7) << camera.distance() << ",fi1=" << std::setw(7) << camera.fi1() << ",fi2=" << std::setw(7) << camera.fi2() << std::endl;
+	//ss << L"delta_time: " << std::setprecision(5)<< delta_time << std::endl;
+	//ss << L"full_time: " << std::setprecision(2) << full_time << std::endl;
 
-	
-	text.setPosition(10, gl.getHeight() - 10 - 180);
-	text.setText(ss.str().c_str());
-	
-	text.Draw();
+	//
+	//text.setPosition(10, gl.getHeight() - 10 - 180);
+	//text.setText(ss.str().c_str());
+	//
+	//text.Draw();
 
-	//восстанавливаем матрицу проекции на перспективу, которую сохраняли ранее.
-	glMatrixMode(GL_PROJECTION);
-	glPopMatrix();
-	glMatrixMode(GL_MODELVIEW);
-	glPopMatrix();
-	
+	////восстанавливаем матрицу проекции на перспективу, которую сохраняли ранее.
+	//glMatrixMode(GL_PROJECTION);
+	//glPopMatrix();
+	//glMatrixMode(GL_MODELVIEW);
+	//glPopMatrix();
+	//
 
 	
 }   
