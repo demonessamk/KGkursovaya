@@ -221,14 +221,13 @@ public:
 	}
 
 
-	void draw3Dkl(float _x, float _y, float z, float width, float height, float _depth, float color1, float color2, float color3) {
+	void draw3Dkl(float _x, float _y, float z, float width, float height, float depth, float color1, float color2, float color3) {
 
 		float x = _x - 10;
 		float y = _y - 6;
-		float depth = -_depth;
 
 		z += pressOffset;
-		depth -= pressOffset;
+		depth += pressOffset;
 
 
 		// Верхняя грань основания
@@ -236,23 +235,23 @@ public:
 		glColor3f(color1, color2, color3);
 		glVertex3f(x, y, z);
 		glVertex3f(x + width, y, z);
-		glVertex3f(x + width, y, z + depth);
-		glVertex3f(x, y, z + depth);
+		glVertex3f(x + width, y, z - depth);
+		glVertex3f(x, y, z - depth);
 		glEnd();
 
-
-		// Передняя грань
-		glBegin(GL_QUADS);
-		glColor3f(color1, color2, color3);
-		glVertex3f(x, y, z + depth);
-		glVertex3f(x + width, y, z + depth);
-		glVertex3f(x + width, y + height, z + depth);
-		glVertex3f(x, y + height, z + depth);
-		glEnd();
 
 		// Задняя грань
 		glBegin(GL_QUADS);
 		glColor3f(color1 - 0.2, color2 - 0.2, color3 - 0.2);
+		glVertex3f(x, y, z - depth);
+		glVertex3f(x + width, y, z - depth);
+		glVertex3f(x + width, y + height, z - depth);
+		glVertex3f(x, y + height, z - depth);
+		glEnd();
+
+		// Передняя грань
+		glBegin(GL_QUADS);
+		glColor3f(color1, color2, color3);
 		glVertex3f(x, y, z);
 		glVertex3f(x + width, y, z);
 		glVertex3f(x + width, y + height, z);
@@ -263,8 +262,8 @@ public:
 		glBegin(GL_QUADS);
 		glColor3f(color1 - 0.2, color2 - 0.2, color3 - 0.2);
 		glVertex3f(x + width, y, z);
-		glVertex3f(x + width, y, z + depth);
-		glVertex3f(x + width, y + height, z + depth);
+		glVertex3f(x + width, y, z - depth);
+		glVertex3f(x + width, y + height, z - depth);
 		glVertex3f(x + width, y + height, z);
 		glEnd();
 
@@ -272,18 +271,18 @@ public:
 		glBegin(GL_QUADS);
 		glColor3f(color1, color2, color3);
 		glVertex3f(x, y, z);
-		glVertex3f(x, y, z + depth);
-		glVertex3f(x, y + height, z + depth);
+		glVertex3f(x, y, z - depth);
+		glVertex3f(x, y + height, z - depth);
 		glVertex3f(x, y + height, z);
 		glEnd();
 
-		// Нижняя грань
+		// Верхняя грань
 		glBegin(GL_QUADS);
 		glColor3f(color1 - 0.2, color2 - 0.2, color3 - 0.2);
 		glVertex3f(x, y + height, z);
 		glVertex3f(x + width, y + height, z);
-		glVertex3f(x + width, y + height, z + depth);
-		glVertex3f(x, y + height, z + depth);
+		glVertex3f(x + width, y + height, z - depth);
+		glVertex3f(x, y + height, z - depth);
 		glEnd();
 
 
@@ -294,10 +293,10 @@ public:
 
 		// Окантовка передней грани
 		glBegin(GL_LINE_LOOP);
-		glVertex3f(x, y, z + depth);
-		glVertex3f(x + width, y, z + depth);
-		glVertex3f(x + width, y + height, z + depth);
-		glVertex3f(x, y + height, z + depth);
+		glVertex3f(x, y, z - depth);
+		glVertex3f(x + width, y, z - depth);
+		glVertex3f(x + width, y + height, z - depth);
+		glVertex3f(x, y + height, z - depth);
 		glEnd();
 
 		// Окантовка задней грани
@@ -312,31 +311,31 @@ public:
 		glBegin(GL_LINE_LOOP);
 		glVertex3f(x, y, z);
 		glVertex3f(x + width, y, z);
-		glVertex3f(x + width, y, z + depth);
-		glVertex3f(x, y, z + depth);
+		glVertex3f(x + width, y, z - depth);
+		glVertex3f(x, y, z - depth);
 		glEnd();
 
 		// Окантовка нижней грани
 		glBegin(GL_LINE_LOOP);
 		glVertex3f(x, y + height, z);
 		glVertex3f(x + width, y + height, z);
-		glVertex3f(x + width, y + height, z + depth);
-		glVertex3f(x, y + height, z + depth);
+		glVertex3f(x + width, y + height, z - depth);
+		glVertex3f(x, y + height, z - depth);
 		glEnd();
 
 		// Окантовка правой грани
 		glBegin(GL_LINE_LOOP);
 		glVertex3f(x + width, y, z);
-		glVertex3f(x + width, y, z + depth);
-		glVertex3f(x + width, y + height, z + depth);
+		glVertex3f(x + width, y, z - depth);
+		glVertex3f(x + width, y + height, z - depth);
 		glVertex3f(x + width, y + height, z);
 		glEnd();
 
 		// Окантовка левой грани
 		glBegin(GL_LINE_LOOP);
 		glVertex3f(x, y, z);
-		glVertex3f(x, y, z + depth);
-		glVertex3f(x, y + height, z + depth);
+		glVertex3f(x, y, z - depth);
+		glVertex3f(x, y + height, z - depth);
 		glVertex3f(x, y + height, z);
 		glEnd();
 	}
@@ -350,11 +349,6 @@ void display() {
 
 	draw3DBase(4, 2, 5.02, 12, 7, 2, 0.82f, 0.90f, 0.94f);
 
-	draw3DBase(13, 5, 7.03, 1, 3, 0.5, 0.77f, 0.88f, 0.71f);
-	draw3DBase(14, 5, 7.03, 1, 1, 0.5, 0.77f, 0.88f, 0.71f);
-
-	draw3DBase(6, 3, 7.03, 5, 1, 0.5, 0.77f, 0.88f, 0.71f);
-
 
 	draw3DBase(4.33333333333333, 8.33333333333333, 7.03, 0.33333333333333, 0.33333333333333, 0.5, 1, 1, 1);
 
@@ -367,6 +361,17 @@ void display() {
 		klav key(i + 5);
 		keys.push_back(key);
 	}
+	klav probel(9);
+	keys.push_back(probel);
+	keys[9].draw3Dkl(6, 3, 7.53, 5, 1, 0.5, 0.77f, 0.88f, 0.71f);
+
+	klav enter_part1(10);
+	keys.push_back(enter_part1);
+	klav enter_part2(11);
+	keys.push_back(enter_part2);
+	keys[10].draw3Dkl(13, 5, 7.53, 1, 3, 0.5, 0.77f, 0.88f, 0.71f);
+	keys[11].draw3Dkl(14, 5, 7.53, 1, 1, 0.5, 0.77f, 0.88f, 0.71f);
+
 
 	float kl_shir = 1;
 	float kl_vis = 1;
@@ -403,12 +408,25 @@ void switchModes(OpenGL *sender, KeyEventArg arg)
 	//конвертируем код клавиши в букву
 	auto key = LOWORD(MapVirtualKeyA(arg.key, MAPVK_VK_TO_CHAR));
 
-	if (key >= '0' && key <= '9') {
+	if (key >= '0' && key <= '8') {
 		int idx = key - '0';
 		if (idx < keys.size()) {
 			keys[idx].press();
 		}
 	}
+
+	if (key == ' ') {
+		int idx = '9' - '0';
+		if (idx < keys.size()) {
+			keys[idx].press();
+		}
+	}
+
+	if (key == VK_RETURN) {
+		keys[10].press();
+		keys[11].press();
+	}
+
 	
 
 	switch (key)
