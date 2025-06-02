@@ -150,35 +150,59 @@ void draw3DBase(float _x, float _y, float z, float width, float height, float de
 
 
 
+
 void drawMonitor() {
-	// Основание подставки (15x2x15)
+	// Основание подставки (непрозрачное)
 	glPushMatrix();
 	glTranslatef(-7.5, 21, 2);
 	glRotatef(270, 1, 0, 0);
 	draw3DBase(10, 6, -7.5, 15, 2, 15, 0.93f, 0.81f, 0.86f);
 	glPopMatrix();
 
-	// Стойка (3x12x3)
+	// Стойка (непрозрачная)
 	glPushMatrix();
 	glTranslatef(-1.5, 21, 2.1);
 	glRotatef(90, 1, 0, 0);
 	draw3DBase(10, 6, -1.5, 3, 14, 3, 0.79f, 0.89f, 0.93f);
 	glPopMatrix();
 
-	// Корпус монитора (18x15x2)
+	// Корпус монитора (непрозрачный)
 	glPushMatrix();
 	glTranslatef(-13.6, 13, 16);
 	glRotatef(90, 1, 0, 0);
 	draw3DBase(10, 6, -9.0, 27.2, 15.3, 2, 0.99f, 0.71f, 0.76f);
 	glPopMatrix();
 
-	// Экран (17x14x1)
+	// Экран (полупрозрачный) - альтернативная реализация
 	glPushMatrix();
 	glTranslatef(-13.1, 12, 16.5);
 	glRotatef(90, 1, 0, 0);
-	draw3DBase(10, 6, -8.5, 26.2, 14.3, 1, 0.69f, 0.88f, 0.90f);
+
+	// Включаем прозрачность
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+	// Рисуем полупрозрачный прямоугольник вручную
+	float x = 0, y = 0, z = -7.8;
+	float width = 26.2, height = 14.3, depth = 1;
+
+
+	glColor4f(0.69f, 0.88f, 0.90f, 0.5f); // RGBA с альфа=0.5
+
+	// Передняя грань
+	glBegin(GL_QUADS);
+	glVertex3f(x, y, z);
+	glVertex3f(x + width, y, z);
+	glVertex3f(x + width, y + height, z);
+	glVertex3f(x, y + height, z);
+	glEnd();
+
+	// Отключаем прозрачность
+	glDisable(GL_BLEND);
 	glPopMatrix();
 }
+
+
 
 class klav {
 public:
@@ -712,63 +736,63 @@ void Render(double delta_time)
 	drawMonitor();
 
 	
-	////сбрасываем все трансформации
-	//glLoadIdentity();
-	//camera.SetUpCamera();	
-	//Shader::DontUseShaders();
-	////рисуем источник света
-	//light.DrawLightGizmo();
+	//сбрасываем все трансформации
+	glLoadIdentity();
+	camera.SetUpCamera();	
+	Shader::DontUseShaders();
+	//рисуем источник света
+	light.DrawLightGizmo();
 
-	////================Сообщение в верхнем левом углу=======================
-	//glActiveTexture(GL_TEXTURE0);
-	////переключаемся на матрицу проекции
-	//glMatrixMode(GL_PROJECTION);
-	////сохраняем текущую матрицу проекции с перспективным преобразованием
-	//glPushMatrix();
-	////загружаем единичную матрицу в матрицу проекции
-	//glLoadIdentity();
+	//================Сообщение в верхнем левом углу=======================
+	glActiveTexture(GL_TEXTURE0);
+	//переключаемся на матрицу проекции
+	glMatrixMode(GL_PROJECTION);
+	//сохраняем текущую матрицу проекции с перспективным преобразованием
+	glPushMatrix();
+	//загружаем единичную матрицу в матрицу проекции
+	glLoadIdentity();
 
-	////устанавливаем матрицу паралельной проекции
-	//glOrtho(0, gl.getWidth() - 1, 0, gl.getHeight() - 1, 0, 1);
+	//устанавливаем матрицу паралельной проекции
+	glOrtho(0, gl.getWidth() - 1, 0, gl.getHeight() - 1, 0, 1);
 
-	////переключаемся на моделвью матрицу
-	//glMatrixMode(GL_MODELVIEW);
-	////сохраняем матрицу
-	//glPushMatrix();
- //   //сбразываем все трансформации и настройки камеры загрузкой единичной матрицы
-	//glLoadIdentity();
+	//переключаемся на моделвью матрицу
+	glMatrixMode(GL_MODELVIEW);
+	//сохраняем матрицу
+	glPushMatrix();
+    //сбразываем все трансформации и настройки камеры загрузкой единичной матрицы
+	glLoadIdentity();
 
-	////отрисованное тут будет визуалзироватся в 2д системе координат
-	////нижний левый угол окна - точка (0,0)
-	////верхний правый угол (ширина_окна - 1, высота_окна - 1)
+	//отрисованное тут будет визуалзироватся в 2д системе координат
+	//нижний левый угол окна - точка (0,0)
+	//верхний правый угол (ширина_окна - 1, высота_окна - 1)
 
-	//
-	//std::wstringstream ss;
-	//ss << std::fixed << std::setprecision(3);
-	//ss << "T - " << (texturing ? L"[вкл]выкл  " : L" вкл[выкл] ") << L"текстур" << std::endl;
-	//ss << "L - " << (lightning ? L"[вкл]выкл  " : L" вкл[выкл] ") << L"освещение" << std::endl;
-	//ss << "A - " << (alpha ? L"[вкл]выкл  " : L" вкл[выкл] ") << L"альфа-наложение" << std::endl;
-	//ss << L"F - Свет из камеры" << std::endl;
-	//ss << L"G - двигать свет по горизонтали" << std::endl;
-	//ss << L"G+ЛКМ двигать свет по вертекали" << std::endl;
-	//ss << L"Коорд. света: (" << std::setw(7) <<  light.x() << "," << std::setw(7) << light.y() << "," << std::setw(7) << light.z() << ")" << std::endl;
-	//ss << L"Коорд. камеры: (" << std::setw(7) << camera.x() << "," << std::setw(7) << camera.y() << "," << std::setw(7) << camera.z() << ")" << std::endl;
-	//ss << L"Параметры камеры: R=" << std::setw(7) << camera.distance() << ",fi1=" << std::setw(7) << camera.fi1() << ",fi2=" << std::setw(7) << camera.fi2() << std::endl;
-	//ss << L"delta_time: " << std::setprecision(5)<< delta_time << std::endl;
-	//ss << L"full_time: " << std::setprecision(2) << full_time << std::endl;
+	
+	std::wstringstream ss;
+	ss << std::fixed << std::setprecision(3);
+	ss << "T - " << (texturing ? L"[вкл]выкл  " : L" вкл[выкл] ") << L"текстур" << std::endl;
+	ss << "L - " << (lightning ? L"[вкл]выкл  " : L" вкл[выкл] ") << L"освещение" << std::endl;
+	ss << "A - " << (alpha ? L"[вкл]выкл  " : L" вкл[выкл] ") << L"альфа-наложение" << std::endl;
+	ss << L"F - Свет из камеры" << std::endl;
+	ss << L"G - двигать свет по горизонтали" << std::endl;
+	ss << L"G+ЛКМ двигать свет по вертекали" << std::endl;
+	ss << L"Коорд. света: (" << std::setw(7) <<  light.x() << "," << std::setw(7) << light.y() << "," << std::setw(7) << light.z() << ")" << std::endl;
+	ss << L"Коорд. камеры: (" << std::setw(7) << camera.x() << "," << std::setw(7) << camera.y() << "," << std::setw(7) << camera.z() << ")" << std::endl;
+	ss << L"Параметры камеры: R=" << std::setw(7) << camera.distance() << ",fi1=" << std::setw(7) << camera.fi1() << ",fi2=" << std::setw(7) << camera.fi2() << std::endl;
+	ss << L"delta_time: " << std::setprecision(5)<< delta_time << std::endl;
+	ss << L"full_time: " << std::setprecision(2) << full_time << std::endl;
 
-	//
-	//text.setPosition(10, gl.getHeight() - 10 - 180);
-	//text.setText(ss.str().c_str());
-	//
-	//text.Draw();
+	
+	text.setPosition(10, gl.getHeight() - 10 - 180);
+	text.setText(ss.str().c_str());
+	
+	text.Draw();
 
-	////восстанавливаем матрицу проекции на перспективу, которую сохраняли ранее.
-	//glMatrixMode(GL_PROJECTION);
-	//glPopMatrix();
-	//glMatrixMode(GL_MODELVIEW);
-	//glPopMatrix();
-	//
+	//восстанавливаем матрицу проекции на перспективу, которую сохраняли ранее.
+	glMatrixMode(GL_PROJECTION);
+	glPopMatrix();
+	glMatrixMode(GL_MODELVIEW);
+	glPopMatrix();
+	
 
 	
 }   
