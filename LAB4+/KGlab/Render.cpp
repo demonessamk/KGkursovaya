@@ -179,10 +179,16 @@ void drawMonitor() {
 }
 
 
+
+
+
+
+
 class klav {
 public:
 	int id;
 	Texture texture;
+
 
 	void draw3Dkl(float _x, float _y, float z, float width, float height, float depth, float color1, float color2, float color3) {
 
@@ -309,13 +315,13 @@ void display() {
 
 	draw3DBase(4, 2, 5.02, 12, 7, 2, 0.82f, 0.90f, 0.94f);
 
-	draw3DBase(13, 5, 7.01, 1, 3, 0.5, 0.77f, 0.88f, 0.71f);
-	draw3DBase(14, 5, 7.01, 1, 1, 0.5, 0.77f, 0.88f, 0.71f);
+	draw3DBase(13, 5, 7.03, 1, 3, 0.5, 0.77f, 0.88f, 0.71f);
+	draw3DBase(14, 5, 7.03, 1, 1, 0.5, 0.77f, 0.88f, 0.71f);
 
-	draw3DBase(6, 3, 7.01, 5, 1, 0.5, 0.77f, 0.88f, 0.71f);
+	draw3DBase(6, 3, 7.03, 5, 1, 0.5, 0.77f, 0.88f, 0.71f);
 
 
-	draw3DBase(4.33333333333333, 8.33333333333333, 7, 0.33333333333333, 0.33333333333333, 0.5, 1, 1, 1);
+	draw3DBase(4.33333333333333, 8.33333333333333, 7.03, 0.33333333333333, 0.33333333333333, 0.5, 1, 1, 1);
 
 
 
@@ -327,7 +333,7 @@ void display() {
 	float nachalo_x = 5;
 	float kl_verh_rast = 7;
 	float kl_niz_rast = 5;
-	float kl_vis_ot_niza = 7.01;
+	float kl_vis_ot_niza = 7.03;
 
 
 	// Верхний ряд (5 клавиш)
