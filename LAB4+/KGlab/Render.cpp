@@ -726,15 +726,20 @@ void Render(double delta_time)
 	
 	std::wstringstream ss;
 	ss << std::fixed << std::setprecision(3);
-	ss << "T - " << (texturing ? L"[вкл]выкл  " : L" вкл[выкл] ") << L"текстур" << std::endl;
-	ss << "L - " << (lightning ? L"[вкл]выкл  " : L" вкл[выкл] ") << L"освещение" << std::endl;
-	ss << "A - " << (alpha ? L"[вкл]выкл  " : L" вкл[выкл] ") << L"альфа-наложение" << std::endl;
-	ss << L"F - Свет из камеры" << std::endl;
-	ss << L"G - двигать свет по горизонтали" << std::endl;
-	ss << L"G+ЛКМ двигать свет по вертекали" << std::endl;
-	ss << L"Коорд. света: (" << std::setw(7) <<  light.x() << "," << std::setw(7) << light.y() << "," << std::setw(7) << light.z() << ")" << std::endl;
-	ss << L"Коорд. камеры: (" << std::setw(7) << camera.x() << "," << std::setw(7) << camera.y() << "," << std::setw(7) << camera.z() << ")" << std::endl;
-	ss << L"Параметры камеры: R=" << std::setw(7) << camera.distance() << ",fi1=" << std::setw(7) << camera.fi1() << ",fi2=" << std::setw(7) << camera.fi2() << std::endl;
+	//ss << "T - " << (texturing ? L"[вкл]выкл  " : L" вкл[выкл] ") << L"текстур" << std::endl;
+	//ss << "L - " << (lightning ? L"[вкл]выкл  " : L" вкл[выкл] ") << L"освещение" << std::endl;
+	//ss << "A - " << (alpha ? L"[вкл]выкл  " : L" вкл[выкл] ") << L"альфа-наложение" << std::endl;
+	//ss << L"F - Свет из камеры" << std::endl;
+	//ss << L"G - двигать свет по горизонтали" << std::endl;
+	//ss << L"G+ЛКМ двигать свет по вертекали" << std::endl;
+	//ss << L"Коорд. света: (" << std::setw(7) <<  light.x() << "," << std::setw(7) << light.y() << "," << std::setw(7) << light.z() << ")" << std::endl;
+	//ss << L"Коорд. камеры: (" << std::setw(7) << camera.x() << "," << std::setw(7) << camera.y() << "," << std::setw(7) << camera.z() << ")" << std::endl;
+	//ss << L"Параметры камеры: R=" << std::setw(7) << camera.distance() << ",fi1=" << std::setw(7) << camera.fi1() << ",fi2=" << std::setw(7) << camera.fi2() << std::endl;
+
+    ss << "0-7 - keys are pressed 0-7 " << std::endl;
+    ss << "space - space bar is pressed " << std::endl;
+    ss << "Enter - Enter is pressed " << std::endl;
+
 	ss << L"delta_time: " << std::setprecision(5)<< delta_time << std::endl;
 	ss << L"full_time: " << std::setprecision(2) << full_time << std::endl;
 
