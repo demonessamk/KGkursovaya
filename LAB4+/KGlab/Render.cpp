@@ -314,18 +314,14 @@ public:
 				texId = texture.GetID();
 				break;
 			case(8):
-				texture.LoadTexture("textures/key8.jpg");
-				texId = texture.GetID();
-				break;
-			case(9):
 				texture.LoadTexture("textures/probel.jpg");
 				texId = texture.GetID();
 				break;
-			case(10):
+			case(9):
 				texture.LoadTexture("textures/enter1.jpg");
 				texId = texture.GetID();
 				break;
-			case(11):
+			case(10):
 				texture.LoadTexture("textures/enter2.jpg");
 				texId = texture.GetID();
 				break;
@@ -445,20 +441,20 @@ void initKeyboard() {
 
 	keys.clear();
 
-	for (int i = 0; i < 5; i++) {
+	for (int i = 0; i < 4; i++) {
 		klav key(i);
 		keys.push_back(key);
 	}
 	for (int i = 0; i < 4; i++) {
-		klav key(i + 5);
+		klav key(i + 4);
 		keys.push_back(key);
 	}
-	klav probel(9);
+	klav probel(8);
 	keys.push_back(probel);
 
-	klav enter_part1(10);
+	klav enter_part1(9);
 	keys.push_back(enter_part1);
-	klav enter_part2(11);
+	klav enter_part2(10);
 	keys.push_back(enter_part2);
 }
 
@@ -490,13 +486,13 @@ void display() {
 
 	// Нижний ряд
 	for (int i = 0; i < 4; i++) {
-		keys[i + 5].draw3Dkl(nachalo_x + i * (kl_shir + kl_rast), kl_niz_rast, kl_vis_ot_niza, kl_shir, kl_vis, kl_glub, 0.98f, 0.85f, 0.87f);
+		keys[i + 4].draw3Dkl(nachalo_x + i * (kl_shir + kl_rast), kl_niz_rast, kl_vis_ot_niza, kl_shir, kl_vis, kl_glub, 0.98f, 0.85f, 0.87f);
 	}
 
 
-	keys[9].draw3Dkl(6, 3, 7.53, 5, 1, 0.5, 0.77f, 0.88f, 0.71f);  // Пробел
-	keys[10].draw3Dkl(13, 5, 7.53, 1, 3, 0.5, 0.77f, 0.88f, 0.71f); // Enter 1
-	keys[11].draw3Dkl(14, 5, 7.53, 1, 1, 0.5, 0.77f, 0.88f, 0.71f); // Enter 2
+	keys[8].draw3Dkl(6, 3, 7.53, 5, 1, 0.5, 0.77f, 0.88f, 0.71f);  // Пробел
+	keys[9].draw3Dkl(13, 5, 7.53, 1, 3, 0.5, 0.77f, 0.88f, 0.71f); // Enter 1
+	keys[10].draw3Dkl(14, 5, 7.53, 1, 1, 0.5, 0.77f, 0.88f, 0.71f); // Enter 2
 }
 
 
@@ -514,7 +510,7 @@ void switchModes(OpenGL *sender, KeyEventArg arg)
 	//конвертируем код клавиши в букву
 	auto key = LOWORD(MapVirtualKeyA(arg.key, MAPVK_VK_TO_CHAR));
 
-	if (key >= '0' && key <= '8') {
+	if (key >= '0' && key <= '7') {
 		int idx = key - '0';
 		if (idx < keys.size()) {
 			keys[idx].press();
@@ -522,15 +518,15 @@ void switchModes(OpenGL *sender, KeyEventArg arg)
 	}
 
 	if (key == ' ') {
-		int idx = '9' - '0';
+		int idx = '8' - '0';
 		if (idx < keys.size()) {
 			keys[idx].press();
 		}
 	}
 
 	if (key == VK_RETURN) {
+		keys[9].press();
 		keys[10].press();
-		keys[11].press();
 	}
 
 	
